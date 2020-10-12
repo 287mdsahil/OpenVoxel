@@ -27,33 +27,6 @@ void error_callback(int error, const char *description) {
   fprintf(stderr, "Error: %s\n", description);
 }
 
-
-GLuint makeTexture(std::string filename) {
-  stbi_set_flip_vertically_on_load(1);
-  int height, width, BPP;
-  unsigned char *localBuffer =
-      stbi_load(filename.c_str(), &width, &height, &BPP, 4);
-
-  GLuint texture;
-  GlCall(glGenTextures(1, &texture));
-  GlCall(glBindTexture(GL_TEXTURE_2D, texture));
-
-  GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-  GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-  GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-  GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-
-  GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA,
-                      GL_UNSIGNED_BYTE, localBuffer));
-  GlCall(glActiveTexture(GL_TEXTURE0));
-  GlCall(glBindTexture(GL_TEXTURE_2D, 0));
-  if (localBuffer)
-    stbi_image_free(localBuffer);
-  GlCall(glActiveTexture(GL_TEXTURE0));
-  GlCall(glBindTexture(GL_TEXTURE_2D, texture));
-  return texture;
-}
-
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mode) {
   if (action == GLFW_PRESS)
@@ -96,9 +69,7 @@ int main() {
   Voxel voxel_element;
   voxel_element.bind();
   Shader basic_shader("src/basicVertex.shader", "src/basicFragment.shader");
-  //Texture grass_block_texture("./res/textures/grass_block.jpeg");
-  GLuint texture = makeTexture("./res/textures/grass_block.jpeg");
-  //grass_block_texture.bind();
+  Texture grass_block_texture("./res/textures/grass_block.jpeg");
   voxel_element.unbind();
 
   Camera camera;
@@ -126,7 +97,9 @@ int main() {
     basic_shader.SetUniformMat4f("model", model);
     basic_shader.SetUniformMat4f("projection", projection);
     basic_shader.SetUniformMat4f("view", view);
+    grass_block_texture.bind();
     voxel_element.render();
+    grass_block_texture.unbind();
     basic_shader.unbind();
     voxel_element.unbind();
 

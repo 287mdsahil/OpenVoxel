@@ -9,13 +9,10 @@ Texture::Texture(std::string filepath)
     : id(0), filepath(filepath), localBuffer(nullptr), height(0), width(0),
       BPP(0) {
   stbi_set_flip_vertically_on_load(1);
-  int height, width, BPP;
-  unsigned char *localBuffer =
-      stbi_load(filepath.c_str(), &width, &height, &BPP, 4);
+  localBuffer = stbi_load(filepath.c_str(), &width, &height, &BPP, 4);
 
-  GLuint texture;
-  GlCall(glGenTextures(1, &texture));
-  GlCall(glBindTexture(GL_TEXTURE_2D, texture));
+  GlCall(glGenTextures(1, &id));
+  GlCall(glBindTexture(GL_TEXTURE_2D, id));
 
   GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
   GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
@@ -28,8 +25,6 @@ Texture::Texture(std::string filepath)
   GlCall(glBindTexture(GL_TEXTURE_2D, 0));
   if (localBuffer)
     stbi_image_free(localBuffer);
-  GlCall(glActiveTexture(GL_TEXTURE0));
-  GlCall(glBindTexture(GL_TEXTURE_2D, texture));
 };
 
 Texture::~Texture() { GlCall(glDeleteTextures(1, &id)); };
