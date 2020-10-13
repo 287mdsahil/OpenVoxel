@@ -69,8 +69,16 @@ int main() {
   Voxel voxel_element;
   voxel_element.bind();
   Shader basic_shader("src/basicVertex.shader", "src/basicFragment.shader");
-  Texture grass_block_texture("./res/textures/grass_block.jpeg");
+  Texture grass_block_texture("./res/textures/grass_block_sprite.png");
   voxel_element.unbind();
+
+  glm::vec3 voxel_positions[] = {
+      glm::vec3(0.0f, 0.0f, 0.0f),   glm::vec3(1.0f, 0.0f, 0.0f),
+      glm::vec3(-1.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 1.0f),
+      glm::vec3(0.0f, 0.0f, -1.0f),  glm::vec3(1.0f, 0.0f, 1.0f),
+      glm::vec3(1.0f, 0.0f, -1.0f),  glm::vec3(-1.0f, 0.0f, 1.0f),
+      glm::vec3(-1.0f, 0.0f, -1.0f),
+  };
 
   Camera camera;
   glm::mat4 model =
@@ -94,11 +102,14 @@ int main() {
     voxel_element.bind();
     basic_shader.bind();
     glm::mat4 view = camera.getView();
-    basic_shader.SetUniformMat4f("model", model);
-    basic_shader.SetUniformMat4f("projection", projection);
-    basic_shader.SetUniformMat4f("view", view);
-    grass_block_texture.bind();
-    voxel_element.render();
+    for (glm::vec3 pos : voxel_positions) {
+      model = glm::translate(glm::mat4(1.0f), pos);
+      basic_shader.SetUniformMat4f("model", model);
+      basic_shader.SetUniformMat4f("projection", projection);
+      basic_shader.SetUniformMat4f("view", view);
+      grass_block_texture.bind();
+      voxel_element.render();
+    }
     grass_block_texture.unbind();
     basic_shader.unbind();
     voxel_element.unbind();
