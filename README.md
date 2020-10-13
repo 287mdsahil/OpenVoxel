@@ -1,8 +1,8 @@
-#Voxel based 3d game
+# Voxel based 3d game
 
 Not much to say. Currently in very early stages. :)
 
-###Check it out:
+### Check it out:
 
 
 ![sample](./docs/res/sample.gif)
