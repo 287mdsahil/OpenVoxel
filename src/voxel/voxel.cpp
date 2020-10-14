@@ -44,8 +44,8 @@ Voxel::Voxel() {
       -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,    //
       -0.5f, 0.5f, -0.5f, 0.0f, 1.0f    //
   };
-  GlCall(glGenVertexArrays(1, &vao));
-  GlCall(glGenBuffers(1, &vbo));
+  GlCall(glGenVertexArrays(1, &m_vao));
+  GlCall(glGenBuffers(1, &m_vbo));
   bind();
   GlCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
                       GL_STATIC_DRAW));
@@ -59,8 +59,8 @@ Voxel::Voxel() {
 }
 
 void Voxel::bind() {
-  GlCall(glBindVertexArray(vao));
-  GlCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+  GlCall(glBindVertexArray(m_vao));
+  GlCall(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
 }
 
 void Voxel::unbind() { GlCall(glBindVertexArray(0)); }

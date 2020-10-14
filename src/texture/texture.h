@@ -4,10 +4,10 @@
 
 class Texture {
 private:
-  unsigned int id;
-  std::string filepath;
-  unsigned char *localBuffer;
-  int width, height, BPP;
+  unsigned int m_id;
+  std::string m_filepath;
+  unsigned char *m_local_buffer;
+  int m_width, m_height, m_BPP;
 
 public:
   Texture(std::string filepath);

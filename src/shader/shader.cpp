@@ -8,8 +8,8 @@
 #include <sstream>
 
 Shader::Shader(std::string vs_filepath, std::string fs_filepath)
-    : vertex_shader_filepath(vs_filepath),
-      fragment_shader_filepath(fs_filepath), id(0) {
+    : m_vertex_shader_filepath(vs_filepath),
+      m_fragment_shader_filepath(fs_filepath), id(0) {
   parse_shader();
   create_shader();
 }
@@ -24,26 +24,26 @@ void Shader::parse_shader() {
 
   {
     std::stringstream source;
-    std::ifstream source_file(vertex_shader_filepath);
+    std::ifstream source_file(m_vertex_shader_filepath);
     // Vertex shader
     if (source_file) {
       source << source_file.rdbuf();
     } else {
       std::cout << "Unable to read vertex shader file" << std::endl;
     }
-    vertex_shader_source = source.str();
+    m_vertex_shader_source = source.str();
   }
 
   {
     std::stringstream source;
-    std::ifstream source_file(fragment_shader_filepath);
+    std::ifstream source_file(m_fragment_shader_filepath);
     // Fragment shader
     if (source_file) {
       source << source_file.rdbuf();
     } else {
       std::cout << "Unable to read vertex shader file" << std::endl;
     }
-    fragment_shader_source = source.str();
+    m_fragment_shader_source = source.str();
   }
 }
 
@@ -51,9 +51,9 @@ unsigned int Shader::compile_shader(GLenum type) {
   unsigned int s_id = glCreateShader(type);
   const char *src;
   if (type == GL_VERTEX_SHADER)
-    src = vertex_shader_source.c_str();
+    src = m_vertex_shader_source.c_str();
   else if (type == GL_FRAGMENT_SHADER)
-    src = fragment_shader_source.c_str();
+    src = m_fragment_shader_source.c_str();
 
   GlCall(glShaderSource(s_id, 1, &src, nullptr));
   GlCall(glCompileShader(s_id));
@@ -90,10 +90,10 @@ void Shader::create_shader() {
 
 int Shader::get_uniform_location(const std::string name) {
   int location;
-  if (uniform_locations_cache.find(name) != uniform_locations_cache.end())
-    return uniform_locations_cache[name];
+  if (m_uniform_locations_cache.find(name) != m_uniform_locations_cache.end())
+    return m_uniform_locations_cache[name];
   GlCall(location = glGetUniformLocation(id, name.c_str()));
-  uniform_locations_cache[name] = location;
+  m_uniform_locations_cache[name] = location;
   if (location == -1) {
     std::cout << "Warning: uniform " << name << " doesn't exist!" << std::endl;
   }

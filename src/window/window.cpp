@@ -9,14 +9,14 @@ void OpenVoxelWindow::init() {
   GlCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
   GlCall(glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE));
 
-  GlCall(window = glfwCreateWindow(window_width, window_height, "OpenVoxel",
+  GlCall(m_window = glfwCreateWindow(m_window_width, m_window_height, "OpenVoxel",
                                    nullptr, nullptr));
-  if (window == nullptr) {
+  if (m_window == nullptr) {
     std::cout << "Failed to create GLFW window" << std::endl;
     GlCall(glfwTerminate());
     return;
   }
-  GlCall(glfwMakeContextCurrent(window));
+  GlCall(glfwMakeContextCurrent(m_window));
 
   // Initialize GLEW
   glewExperimental = GL_TRUE;
@@ -25,15 +25,15 @@ void OpenVoxelWindow::init() {
     return;
   }
   GlCall(glClearColor(0.2f, 0.3f, 0.4f, 1.0f));
-  GlCall(glViewport(0, 0, window_width, window_height));
+  GlCall(glViewport(0, 0, m_window_width, m_window_height));
   GlCall(glfwSwapInterval(1));
   GlCall(glEnable(GL_DEPTH_TEST));
 }
-GLFWwindow *OpenVoxelWindow::getWindow() { return window; }
-bool OpenVoxelWindow::should_close() { return glfwWindowShouldClose(window); }
+GLFWwindow *OpenVoxelWindow::getWindow() { return m_window; }
+bool OpenVoxelWindow::should_close() { return glfwWindowShouldClose(m_window); }
 void OpenVoxelWindow::swap_buffers() {
   // Swap the buffers
-  GlCall(glfwSwapBuffers(window));
+  GlCall(glfwSwapBuffers(m_window));
 }
-int OpenVoxelWindow::getHeight() { return window_height; }
-int OpenVoxelWindow::getWidth() { return window_width; }
+int OpenVoxelWindow::getHeight() { return m_window_height; }
+int OpenVoxelWindow::getWidth() { return m_window_width; }

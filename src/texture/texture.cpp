@@ -6,36 +6,36 @@
 #include <GLFW/glfw3.h>
 
 Texture::Texture(std::string filepath)
-    : id(0), filepath(filepath), localBuffer(nullptr), height(0), width(0),
-      BPP(0) {
+    : m_id(0), m_filepath(filepath), m_local_buffer(nullptr), m_height(0), m_width(0),
+      m_BPP(0) {
   stbi_set_flip_vertically_on_load(1);
-  localBuffer = stbi_load(filepath.c_str(), &width, &height, &BPP, 4);
+  m_local_buffer = stbi_load(m_filepath.c_str(), &m_width, &m_height, &m_BPP, 4);
 
-  GlCall(glGenTextures(1, &id));
-  GlCall(glBindTexture(GL_TEXTURE_2D, id));
+  GlCall(glGenTextures(1, &m_id));
+  GlCall(glBindTexture(GL_TEXTURE_2D, m_id));
 
   GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
   GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
   GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
   GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
-  GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA,
-                      GL_UNSIGNED_BYTE, localBuffer));
+  GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA,
+                      GL_UNSIGNED_BYTE, m_local_buffer));
   GlCall(glActiveTexture(GL_TEXTURE0));
   GlCall(glBindTexture(GL_TEXTURE_2D, 0));
-  if (localBuffer)
-    stbi_image_free(localBuffer);
+  if (m_local_buffer)
+    stbi_image_free(m_local_buffer);
 };
 
-Texture::~Texture() { GlCall(glDeleteTextures(1, &id)); };
+Texture::~Texture() { GlCall(glDeleteTextures(1, &m_id)); };
 
 void Texture::bind(unsigned int slot /* = 0*/) const {
   GlCall(glActiveTexture(GL_TEXTURE0 + slot));
-  GlCall(glBindTexture(GL_TEXTURE_2D, id));
+  GlCall(glBindTexture(GL_TEXTURE_2D, m_id));
 }
 
 void Texture::unbind() const { GlCall(glBindTexture(GL_TEXTURE_2D, 0)); }
 
-inline int Texture::getWidth() { return width; }
+inline int Texture::getWidth() { return m_width; }
 
-inline int Texture::getHeight() { return height; }
+inline int Texture::getHeight() { return m_height; }

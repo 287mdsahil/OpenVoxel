@@ -13,10 +13,10 @@
 
 class Camera {
 private:
-  glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-  glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-  glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-  glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+  glm::vec3 m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+  glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 m_cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::mat4 m_view = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
   float deltaTime = 0.0f;
   float lastFrame = 0.0f;
 
@@ -29,23 +29,23 @@ public:
 
     GLfloat cameraSpeed = 5.0f * deltaTime;
     if (keys[GLFW_KEY_W])
-      cameraPos += cameraSpeed * cameraFront;
+      m_cameraPos += cameraSpeed * m_cameraFront;
     if (keys[GLFW_KEY_S])
-      cameraPos -= cameraSpeed * cameraFront;
+      m_cameraPos -= cameraSpeed * m_cameraFront;
     if (keys[GLFW_KEY_A])
-      cameraPos -=
-          glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+      m_cameraPos -=
+          glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
     if (keys[GLFW_KEY_D])
-      cameraPos +=
-          glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+      m_cameraPos +=
+          glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * cameraSpeed;
 
     glm::vec3 front;
     front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
     front.y = sin(glm::radians(pitch));
     front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-    cameraFront = glm::normalize(front);
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    m_cameraFront = glm::normalize(front);
+    m_view = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
   }
 
-  glm::mat4 getView() { return view; }
+  glm::mat4 getView() { return m_view; }
 };

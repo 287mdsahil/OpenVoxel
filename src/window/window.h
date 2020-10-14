@@ -5,9 +5,9 @@
 #include <iostream>
 
 class OpenVoxelWindow {
-  int window_height = 600;
-  int window_width = 800;
-  GLFWwindow *window;
+  int m_window_height = 600;
+  int m_window_width = 800;
+  GLFWwindow *m_window;
   void init();
 
 public:

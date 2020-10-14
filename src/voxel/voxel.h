@@ -5,8 +5,8 @@
 #include <GLFW/glfw3.h>
 
 class Voxel {
-  unsigned int vao;
-  unsigned int vbo;
+  unsigned int m_vao;
+  unsigned int m_vbo;
 
 public:
   Voxel();
