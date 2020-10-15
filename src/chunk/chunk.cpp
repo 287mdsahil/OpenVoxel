@@ -3,7 +3,26 @@
 Chunk::Chunk() : m_chunk_size(16), m_chunk_pos(glm::vec3(0.0f)) {
   m_voxel_positions =
       (bool *)malloc(m_chunk_size * m_chunk_size * m_chunk_size);
+
+  for (unsigned int x = 0; x < m_chunk_size; x++)
+    for (unsigned int y = 0; y < m_chunk_size; y++)
+      for (unsigned int z = 0; z < m_chunk_size; z++)
+        setVoxelAt(x, y, z, false);
+
+  setVoxelAt(1, 1, 1, true);
+  setVoxelAt(1, 1, 2, true);
+  setVoxelAt(1, 1, 0, true);
+  setVoxelAt(2, 1, 1, true);
+  setVoxelAt(2, 1, 2, true);
+  setVoxelAt(2, 1, 0, true);
+  setVoxelAt(0, 1, 1, true);
+  setVoxelAt(0, 1, 2, true);
+  setVoxelAt(0, 1, 0, true);
 }
+
+unsigned int Chunk::getChunkSize() { return m_chunk_size; }
+
+glm::vec3 Chunk::getPos() { return m_chunk_pos; }
 
 bool Chunk::getVoxelAt(int x, int y, int z) {
   int pos = x * (m_chunk_size * m_chunk_size) + y * (m_chunk_size) + z;

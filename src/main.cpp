@@ -67,18 +67,6 @@ int main() {
   GlCall(
       glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED));
   Renderer voxel_renderer;
-  voxel_renderer.bind();
-  Shader basic_shader("src/basicVertex.shader", "src/basicFragment.shader");
-  Texture grass_block_texture("./res/textures/grass_block_sprite.png");
-  voxel_renderer.unbind();
-
-  glm::vec3 voxel_positions[] = {
-      glm::vec3(0.0f, 0.0f, 0.0f),   glm::vec3(1.0f, 0.0f, 0.0f),
-      glm::vec3(-1.0f, 0.0f, 0.0f),  glm::vec3(0.0f, 0.0f, 1.0f),
-      glm::vec3(0.0f, 0.0f, -1.0f),  glm::vec3(1.0f, 0.0f, 1.0f),
-      glm::vec3(1.0f, 0.0f, -1.0f),  glm::vec3(-1.0f, 0.0f, 1.0f),
-      glm::vec3(-1.0f, 0.0f, -1.0f),
-  };
 
   Camera camera;
   glm::mat4 model =
@@ -100,19 +88,9 @@ int main() {
 
     // Rendering
     voxel_renderer.bind();
-    basic_shader.bind();
+    // basic_shader.bind();
     glm::mat4 view = camera.getView();
-    for (glm::vec3 pos : voxel_positions) {
-      model = glm::translate(glm::mat4(1.0f), pos);
-      basic_shader.SetUniformMat4f("model", model);
-      basic_shader.SetUniformMat4f("projection", projection);
-      basic_shader.SetUniformMat4f("view", view);
-      grass_block_texture.bind();
-      voxel_renderer.render();
-    }
-    grass_block_texture.unbind();
-    basic_shader.unbind();
-    voxel_renderer.unbind();
+    voxel_renderer.renderChunk(projection, view);
 
     // Swap the buffers
     window.swap_buffers();

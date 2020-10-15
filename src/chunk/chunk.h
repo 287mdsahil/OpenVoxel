@@ -7,8 +7,10 @@ class Chunk {
   glm::vec3 m_chunk_pos;
   bool *m_voxel_positions;
 
-  bool getVoxelAt(int x, int y, int z);
-  void setVoxelAt(int x, int y, int z, bool val);
 public:
   Chunk();
+  unsigned int getChunkSize();
+  glm::vec3 getPos();
+  bool getVoxelAt(int x, int y, int z);
+  void setVoxelAt(int x, int y, int z, bool val);
 };
