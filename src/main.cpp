@@ -1,12 +1,12 @@
 #define GLEW_STATIC
 #include "camera/camera.h"
 #include "error_handling/errorHandling.h"
+#include "renderer/renderer.h"
 #include "texture/texture.h"
 #include "vendor/glm/glm.hpp"
 #include "vendor/glm/gtc/matrix_transform.hpp"
 #include "vendor/glm/gtc/type_ptr.hpp"
 #include "vendor/stb_image/stb_image.h"
-#include "voxel/voxel.h"
 #include "window/window.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -66,11 +66,11 @@ int main() {
   GlCall(glfwSetCursorPosCallback(window.getWindow(), mouse_callback));
   GlCall(
       glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED));
-  Voxel voxel_element;
-  voxel_element.bind();
+  Renderer voxel_renderer;
+  voxel_renderer.bind();
   Shader basic_shader("src/basicVertex.shader", "src/basicFragment.shader");
   Texture grass_block_texture("./res/textures/grass_block_sprite.png");
-  voxel_element.unbind();
+  voxel_renderer.unbind();
 
   glm::vec3 voxel_positions[] = {
       glm::vec3(0.0f, 0.0f, 0.0f),   glm::vec3(1.0f, 0.0f, 0.0f),
@@ -99,7 +99,7 @@ int main() {
     camera.do_movement(keys, pitch, yaw);
 
     // Rendering
-    voxel_element.bind();
+    voxel_renderer.bind();
     basic_shader.bind();
     glm::mat4 view = camera.getView();
     for (glm::vec3 pos : voxel_positions) {
@@ -108,11 +108,11 @@ int main() {
       basic_shader.SetUniformMat4f("projection", projection);
       basic_shader.SetUniformMat4f("view", view);
       grass_block_texture.bind();
-      voxel_element.render();
+      voxel_renderer.render();
     }
     grass_block_texture.unbind();
     basic_shader.unbind();
-    voxel_element.unbind();
+    voxel_renderer.unbind();
 
     // Swap the buffers
     window.swap_buffers();

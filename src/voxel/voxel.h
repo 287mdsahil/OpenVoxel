@@ -1,16 +1,16 @@
-#define GLEW_STATIC
-#include "../error_handling/errorHandling.h"
-#include "../shader/shader.h"
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <vector>
 
 class Voxel {
-  unsigned int m_vao;
-  unsigned int m_vbo;
+  static const std::vector<float> m_rear_face;
+  static const std::vector<float> m_front_face;
+  static const std::vector<float> m_top_face;
+  static const std::vector<float> m_bottom_face;
+  static const std::vector<float> m_left_face;
+  static const std::vector<float> m_right_face;
+
+  std::vector<float> m_vertices;
 
 public:
-  Voxel();
-  void bind();
-  void unbind();
-  void render();
+  std::vector<float> getVertices(bool front, bool rear, bool top, bool bottom, bool left,
+                     bool right);
 };
