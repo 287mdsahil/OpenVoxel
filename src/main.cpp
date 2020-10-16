@@ -21,6 +21,7 @@ float lastY = 0;
 float yaw = 0.0f;
 float pitch = 0.0f;
 bool firstMouse = true;
+bool cursor_captured = GLFW_FALSE;
 OpenVoxelWindow window;
 glm::mat4 projection;
 
@@ -38,42 +39,53 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
   if (key == GLFW_KEY_ESCAPE) {
     glfwSetWindowShouldClose(window, true);
   }
+  if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
+    if (cursor_captured) {
+      cursor_captured = GLFW_FALSE;
+      GlCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL));
+      firstMouse = true;
+
+    } else {
+      cursor_captured = GLFW_TRUE;
+      GlCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED));
+    }
+  }
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
-  if (firstMouse) {
-    lastX = xpos;
-    lastY = ypos;
-    firstMouse = false;
+  if (cursor_captured) {
+    if (firstMouse) {
+      lastX = xpos;
+      lastY = ypos;
+      firstMouse = false;
+    } else {
+      float sensitivity = 0.05f;
+      float xoffset = (xpos - lastX) * sensitivity;
+      float yoffset = (ypos - lastY) * sensitivity;
+      lastX = xpos;
+      lastY = ypos;
+      yaw += xoffset;
+      pitch -= yoffset;
+
+      if (pitch > 89.0f)
+        pitch = 89.0f;
+      if (pitch < -89.0f)
+        pitch = -89.0f;
+    }
   }
-
-  float sensitivity = 0.05f;
-  float xoffset = (xpos - lastX) * sensitivity;
-  float yoffset = (ypos - lastY) * sensitivity;
-  lastX = xpos;
-  lastY = ypos;
-  yaw += xoffset;
-  pitch -= yoffset;
-
-  if (pitch > 89.0f)
-    pitch = 89.0f;
-  if (pitch < -89.0f)
-    pitch = -89.0f;
 };
 
 void window_resize_callback(GLFWwindow *w, int width, int height) {
   window.window_resize_callback(width, height);
   projection = window.getProjection();
-  printf("%d %d\n",window.getWidth(),window.getHeight());
 }
 
 int main() {
   GlCall(glfwSetKeyCallback(window.getWindow(), key_callback));
   GlCall(glfwSetCursorPosCallback(window.getWindow(), mouse_callback));
-  GlCall(glfwSetWindowSizeCallback(window.getWindow(), window_resize_callback));
-  GlCall(glfwSetFramebufferSizeCallback(window.getWindow(), window_resize_callback));
-  GlCall(
-      glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED));
+  GlCall(glfwSetFramebufferSizeCallback(window.getWindow(),
+                                        window_resize_callback));
+  GlCall(glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL));
   Renderer voxel_renderer;
 
   Camera camera;
@@ -93,7 +105,7 @@ int main() {
     voxel_renderer.bind();
     // basic_shader.bind();
     glm::mat4 view = camera.getView();
-    voxel_renderer.renderChunk(projection, view);
+    voxel_renderer.renderChunk(window.getProjection(), view);
 
     // Swap the buffers
     window.swap_buffers();

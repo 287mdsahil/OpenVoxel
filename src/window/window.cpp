@@ -49,7 +49,7 @@ void OpenVoxelWindow::window_resize_callback(int width, int height) {
   m_window_width = width;
   m_window_height = height;
   m_projection = glm::perspective(
-      45.0f, (float)m_window_height / (float)m_window_width, 1.0f, -100.0f);
+      45.0f, (float)m_window_width / (float)m_window_height, 1.0f, -100.0f);
   GlCall(glViewport(0, 0, m_window_width, m_window_height));
 }
 
