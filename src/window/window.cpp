@@ -1,16 +1,21 @@
 #include "window.h"
 
-OpenVoxelWindow::OpenVoxelWindow() { init(); }
+OpenVoxelWindow::OpenVoxelWindow()
+    : m_projection(glm::perspective(
+          45.0f, (float)m_window_height / (float)m_window_width, 1.0f,
+          -100.0f)) {
+  init();
+}
 
 void OpenVoxelWindow::init() {
   GlCall(glfwInit());
   GlCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3));
   GlCall(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3));
   GlCall(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE));
-  GlCall(glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE));
+  GlCall(glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE));
 
-  GlCall(m_window = glfwCreateWindow(m_window_width, m_window_height, "OpenVoxel",
-                                   nullptr, nullptr));
+  GlCall(m_window = glfwCreateWindow(m_window_width, m_window_height,
+                                     "OpenVoxel", nullptr, nullptr));
   if (m_window == nullptr) {
     std::cout << "Failed to create GLFW window" << std::endl;
     GlCall(glfwTerminate());
@@ -29,11 +34,23 @@ void OpenVoxelWindow::init() {
   GlCall(glfwSwapInterval(1));
   GlCall(glEnable(GL_DEPTH_TEST));
 }
+
 GLFWwindow *OpenVoxelWindow::getWindow() { return m_window; }
+
 bool OpenVoxelWindow::should_close() { return glfwWindowShouldClose(m_window); }
-void OpenVoxelWindow::swap_buffers() {
-  // Swap the buffers
-  GlCall(glfwSwapBuffers(m_window));
-}
+
+void OpenVoxelWindow::swap_buffers() { GlCall(glfwSwapBuffers(m_window)); }
+
 int OpenVoxelWindow::getHeight() { return m_window_height; }
+
 int OpenVoxelWindow::getWidth() { return m_window_width; }
+
+void OpenVoxelWindow::window_resize_callback(int width, int height) {
+  m_window_width = width;
+  m_window_height = height;
+  m_projection = glm::perspective(
+      45.0f, (float)m_window_height / (float)m_window_width, 1.0f, -100.0f);
+  GlCall(glViewport(0, 0, m_window_width, m_window_height));
+}
+
+glm::mat4 OpenVoxelWindow::getProjection() { return m_projection; }

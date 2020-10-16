@@ -17,11 +17,12 @@
 
 bool keys[1024];
 float lastX = 0;
-;
 float lastY = 0;
 float yaw = 0.0f;
 float pitch = 0.0f;
 bool firstMouse = true;
+OpenVoxelWindow window;
+glm::mat4 projection;
 
 void error_callback(int error, const char *description) {
   fprintf(stderr, "Error: %s\n", description);
@@ -60,21 +61,23 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     pitch = -89.0f;
 };
 
+void window_resize_callback(GLFWwindow *w, int width, int height) {
+  window.window_resize_callback(width, height);
+  projection = window.getProjection();
+  printf("%d %d\n",window.getWidth(),window.getHeight());
+}
+
 int main() {
-  OpenVoxelWindow window;
   GlCall(glfwSetKeyCallback(window.getWindow(), key_callback));
   GlCall(glfwSetCursorPosCallback(window.getWindow(), mouse_callback));
+  GlCall(glfwSetWindowSizeCallback(window.getWindow(), window_resize_callback));
+  GlCall(glfwSetFramebufferSizeCallback(window.getWindow(), window_resize_callback));
   GlCall(
       glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED));
   Renderer voxel_renderer;
 
   Camera camera;
-  glm::mat4 model =
-      glm::rotate(glm::mat4(1.0f), -45.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-  glm::mat4 projection;
-  projection = glm::perspective(
-      45.0f, (float)window.getWidth() / (float)window.getWidth(), 1.0f,
-      -100.0f);
+  projection = window.getProjection();
 
   // Setting the clear color
   GlCall(glClearColor(0.2f, 0.3f, 0.4f, 1.0f));
