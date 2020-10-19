@@ -22,5 +22,5 @@ public:
   int getHeight();
   int getWidth();
   glm::mat4 getProjection();
-  void window_resize_callback(int width, int height);
+  void resize(int width, int height);
 };

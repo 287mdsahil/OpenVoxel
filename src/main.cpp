@@ -76,7 +76,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
 };
 
 void window_resize_callback(GLFWwindow *w, int width, int height) {
-  window.window_resize_callback(width, height);
+  window.resize(width, height);
   projection = window.getProjection();
 }
 
@@ -99,7 +99,7 @@ int main() {
     // Check and call events
     GlCall(glfwPollEvents());
 
-    camera.do_movement(keys, pitch, yaw);
+    camera.doMovement(keys, pitch, yaw);
 
     // Rendering
     voxel_renderer.bind();

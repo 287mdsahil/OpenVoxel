@@ -45,7 +45,7 @@ int OpenVoxelWindow::getHeight() { return m_window_height; }
 
 int OpenVoxelWindow::getWidth() { return m_window_width; }
 
-void OpenVoxelWindow::window_resize_callback(int width, int height) {
+void OpenVoxelWindow::resize(int width, int height) {
   m_window_width = width;
   m_window_height = height;
   m_projection = glm::perspective(
